@@ -381,35 +381,45 @@ xrsbout(){
 if [ -e "$HOME/agsb/xray" ]; then
 sed -i '${s/,\s*$//}' "$HOME/agsb/xr.json"
 cat >> "$HOME/agsb/xr.json" <<EOF
-],
-"outbounds": [
-{
-"tag":"warp-out",
-"protocol":"wireguard",
-"settings":{
-"secretKey":"4GRI+uhXHop6U9H5Gi4YbD+5IoBvZ/kLdTdyal/y9EE=",
-"address":[
-"172.16.0.2/32",
-"2606:4700:110:845b:dd5b:5b91:8e5a:60b9/128"
-],
-"peers":[
-{
-"publicKey":"bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
-"allowedIPs": [
-"0.0.0.0/0",
-"::/0"
-],
-"endpoint":"engage.cloudflareclient.com:2408"
-}
-],
-"reserved":[197,230,30]
-}
-},
-{
-"protocol": "freedom",
-"tag": "warp-out"
-}
-]
+  ],
+  "outbounds": [
+    {
+      "tag": "warp-out",
+      "protocol": "wireguard",
+      "settings": {
+        "secretKey": "COAYqKrAXaQIGL8+Wkmfe39r1tMMR80JWHVaF443XFQ=",
+        "address": [
+          "172.16.0.2/32",
+          "2606:4700:110:8eb1:3b27:e65e:3645:97b0/128"
+        ],
+        "peers": [
+          {
+            "publicKey": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+            "allowedIPs": [
+              "0.0.0.0/0",
+              "::/0"
+            ],
+            "endpoint": "engage.cloudflareclient.com:2408"
+          }
+        ],
+        "reserved": [134, 63, 85]
+          }
+    },
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    }
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "network": "tcp,udp",
+        "outboundTag": "warp-out"
+      }
+    ]
+  }
 }
 EOF
 nohup "$HOME/agsb/xray" run -c "$HOME/agsb/xr.json" >/dev/null 2>&1 &
@@ -417,36 +427,43 @@ fi
 if [ -e "$HOME/agsb/sing-box" ]; then
 sed -i '${s/,\s*$//}' "$HOME/agsb/sb.json"
 cat >> "$HOME/agsb/sb.json" <<EOF
-],
-"endpoints":[
-{
-"type":"wireguard",
-"tag":"warp-out",
-"address":[
-"172.16.0.2/32",
-"2606:4700:110:845b:dd5b:5b91:8e5a:60b9/128"
-],
-"private_key":"4GRI+uhXHop6U9H5Gi4YbD+5IoBvZ/kLdTdyal/y9EE=",
-"peers": [
-{
-"address": "engage.cloudflareclient.com",
-"port":2408,
-"public_key":"bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
-"allowed_ips": [
-"0.0.0.0/0",
-"::/0"
-],
-"reserved":[197,230,30]
-}
-]
-}
-],
-"outbounds": [
-{
-"type":"direct",
-"tag":"warp-out"
-}
-]
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct"
+    }
+  ],
+  "endpoints": [
+    {
+      "type": "wireguard",
+      "tag": "warp-out",
+      "address": [
+        "172.16.0.2/32",
+        "2606:4700:110:8eb1:3b27:e65e:3645:97b0/128"
+      ],
+      "private_key": "COAYqKrAXaQIGL8+Wkmfe39r1tMMR80JWHVaF443XFQ=",
+      "peers": [
+        {
+          "address": "engage.cloudflareclient.com",
+          "port": 2408,
+          "public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+          "allowed_ips": [
+            "0.0.0.0/0",
+            "::/0"
+          ],
+          "reserved": [134, 63, 85]
+        }
+      ]
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "outbound": "direct"
+      }
+    ]
+  }
 }
 EOF
 nohup "$HOME/agsb/sing-box" run -c "$HOME/agsb/sb.json" >/dev/null 2>&1 &
