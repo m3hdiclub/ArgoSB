@@ -47,6 +47,24 @@ warpcheck(){
 wgcfv6=$(curl -s6m5 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
 wgcfv4=$(curl -s4m5 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
 }
+warpsx(){
+if [ -z "${warp+x}" ]; then
+xouttag=direct
+souttag=direct
+elif [ "$warp" = "" ]; then
+xouttag=warp-out
+souttag=warp-out
+elif [ "$warp" = "x" ]; then
+xouttag=warp-out
+souttag=direct
+elif [ "$warp" = "s" ]; then
+xouttag=direct
+souttag=warp-out
+else
+xouttag=direct
+souttag=direct
+fi
+}
 insuuid(){
 if [ -z "$uuid" ]; then
 if [ -e "$HOME/agsb/sing-box" ]; then
@@ -416,7 +434,7 @@ cat >> "$HOME/agsb/xr.json" <<EOF
       {
         "type": "field",
         "network": "tcp,udp",
-        "outboundTag": "warp-out"
+        "outboundTag": "${outbound}"
       }
     ]
   }
@@ -460,7 +478,7 @@ cat >> "$HOME/agsb/sb.json" <<EOF
   "route": {
     "rules": [
       {
-        "outbound": "direct"
+        "outbound": "${outbound}"
       }
     ]
   }
