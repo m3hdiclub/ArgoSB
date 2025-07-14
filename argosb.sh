@@ -460,7 +460,6 @@ cat >> "$HOME/agsb/sb.json" <<EOF
   "route": {
     "rules": [
       {
-        "network": "tcp,udp",
         "outbound": "direct"
       }
     ]
