@@ -31,7 +31,7 @@ echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "甬哥Github项目 ：github.com/yonggekkk"
 echo "甬哥Blogger博客 ：ygkkk.blogspot.com"
 echo "甬哥YouTube频道 ：www.youtube.com/@ygkkk"
-echo "ArgoSB一键无交互极简脚本【Sing-box + Xray + Argo三内核合一】"
+echo "ArgoSB一键无交互极简脚本"
 echo "当前版本：V25.7.4"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 hostname=$(uname -a | awk '{print $2}')
@@ -381,13 +381,35 @@ xrsbout(){
 if [ -e "$HOME/agsb/xray" ]; then
 sed -i '${s/,\s*$//}' "$HOME/agsb/xr.json"
 cat >> "$HOME/agsb/xr.json" <<EOF
-  ],
-  "outbounds": [
-    {
-      "protocol": "freedom",
-      "tag": "direct"
-    }
-  ]
+],
+"outbounds": [
+{
+"tag":"warp-out",
+"protocol":"wireguard",
+"settings":{
+"secretKey":"4GRI+uhXHop6U9H5Gi4YbD+5IoBvZ/kLdTdyal/y9EE=",
+"address":[
+"172.16.0.2/32",
+"2606:4700:110:845b:dd5b:5b91:8e5a:60b9/128"
+],
+"peers":[
+{
+"publicKey":"bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+"allowedIPs": [
+"0.0.0.0/0",
+"::/0"
+],
+"endpoint":"engage.cloudflareclient.com:2408"
+}
+],
+"reserved":[197,230,30]
+}
+},
+{
+"protocol": "freedom",
+"tag": "warp-out"
+}
+]
 }
 EOF
 nohup "$HOME/agsb/xray" run -c "$HOME/agsb/xr.json" >/dev/null 2>&1 &
@@ -396,10 +418,33 @@ if [ -e "$HOME/agsb/sing-box" ]; then
 sed -i '${s/,\s*$//}' "$HOME/agsb/sb.json"
 cat >> "$HOME/agsb/sb.json" <<EOF
 ],
+"endpoints":[
+{
+"type":"wireguard",
+"tag":"warp-out",
+"address":[
+"172.16.0.2/32",
+"2606:4700:110:845b:dd5b:5b91:8e5a:60b9/128"
+],
+"private_key":"4GRI+uhXHop6U9H5Gi4YbD+5IoBvZ/kLdTdyal/y9EE=",
+"peers": [
+{
+"address": "engage.cloudflareclient.com",
+"port":2408,
+"public_key":"bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+"allowed_ips": [
+"0.0.0.0/0",
+"::/0"
+],
+"reserved":[197,230,30]
+}
+]
+}
+],
 "outbounds": [
 {
 "type":"direct",
-"tag":"direct"
+"tag":"warp-out"
 }
 ]
 }
